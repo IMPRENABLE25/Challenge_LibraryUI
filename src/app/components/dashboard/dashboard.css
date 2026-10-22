@@ -4,10 +4,6 @@
   color: #EDE6DA;
 }
 
-:host * {
-  box-sizing: border-box;
-}
-
 :host .dashboard-shell {
   width: 100%;
   max-width: none;
@@ -43,9 +39,7 @@
   align-items: flex-start;
   padding: 1.5rem;
   background: #262421;
-  border: none;
   border-radius: 14px;
-  box-shadow: none;
   transition: background-color 0.2s ease;
   min-width: 0;
 }
@@ -69,7 +63,6 @@
 :host .kpi-icon svg {
   width: 1.5rem;
   height: 1.5rem;
-  color: #E0A458;
 }
 
 :host .kpi-card__content {
@@ -95,7 +88,6 @@
   font-size: clamp(1.4rem, 2vw, 1.75rem);
   line-height: 1.2;
   font-weight: 700;
-  color: #EDE6DA;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -126,7 +118,6 @@
 
 :host .main-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
   gap: var(--gap, 1.5rem);
 }
 
@@ -147,10 +138,8 @@
 
 :host .panel-card {
   background: #262421;
-  border: none;
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: none;
   min-width: 0;
   transition: background-color 0.2s ease;
 }
@@ -176,7 +165,6 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
-  color: #EDE6DA;
 }
 
 :host .chart-legend {
@@ -218,7 +206,6 @@
 :host .chart-frame svg {
   position: absolute;
   inset: 0;
-  display: block;
   width: 100%;
   height: 100%;
 }
@@ -311,14 +298,12 @@
 
 :host .category-name {
   font-size: 0.85rem;
-  color: #EDE6DA;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 :host .category-track {
-  position: relative;
   flex: 1;
   min-width: 0;
   height: 0.5rem;
@@ -337,7 +322,6 @@
   text-align: right;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #EDE6DA;
   flex-shrink: 0;
 }
 
@@ -357,11 +341,6 @@
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.75rem 0.5rem;
-  border-bottom: 1px solid transparent;
-}
-
-:host .activity-item:last-child {
-  border-bottom: none;
 }
 
 :host .activity-icon {
@@ -391,13 +370,7 @@
   margin: 0 0 0.35rem;
   font-size: 0.85rem;
   line-height: 1.5;
-  color: #EDE6DA;
   word-break: break-word;
-}
-
-:host .activity-copy strong {
-  color: #EDE6DA;
-  font-weight: 700;
 }
 
 :host .activity-target {
@@ -435,11 +408,6 @@
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.75rem 0.5rem;
-  border-bottom: 1px solid transparent;
-}
-
-:host .task-item:last-child {
-  border-bottom: none;
 }
 
 :host .task-checkbox {
@@ -459,7 +427,6 @@
   display: block;
   margin-bottom: 0.5rem;
   font-size: 0.85rem;
-  color: #EDE6DA;
   line-height: 1.4;
   word-break: break-word;
 }
@@ -509,7 +476,6 @@
   height: 2rem;
   border-radius: 999px;
   background: #2E2B27;
-  color: #EDE6DA;
   font-size: 0.7rem;
   font-weight: 600;
   flex-shrink: 0;
@@ -530,10 +496,6 @@
 :host select option {
   background: #1C1B19;
   color: #EDE6DA;
-}
-
-:host a {
-  color: inherit;
 }
 
 @container dashboard (max-width: 900px) {
