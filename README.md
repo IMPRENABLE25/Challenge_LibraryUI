@@ -12,4 +12,4 @@ DJALAZIN DAO est une application web de démonstration d’une interface de gouv
 - Navigation responsive avec menu de compte et déconnexion.
 
 # ATTENTION 
-Certains boutons, comme **Explorer la Blockchain** ne seront fonctionnels qu'une fois le côté blockchain déployée . 
+Certains boutons, comme **Explorer la Blockchain** ne seront fonctionnels qu'une fois le côté blockchain déployée ainsi que la connexion via **Wallet** . 
