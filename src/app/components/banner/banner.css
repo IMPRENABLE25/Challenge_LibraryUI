@@ -1,0 +1,24 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #1C1B19;
+}
+
+.banner {
+  background-color: #1C1B19;
+}
+
+.banner-cta {
+  background: #E0A458;
+  border-color: rgba(224, 164, 88, 0.7);
+  box-shadow: none;
+}
+
+.banner-cta:hover {
+  background: #EBB46B;
+  border-color: #E0A458;
+}
+
+.banner-cta:focus-visible {
+  outline: none;
+}

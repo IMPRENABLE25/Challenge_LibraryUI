@@ -1,0 +1,384 @@
+```html
+<div class="max-w-350 mx-auto my-8 px-4 font-sans bg-[#1C1B19] text-[#EDE6DA]">
+
+  <!-- HEADER -->
+  <div class="flex items-start justify-between mb-6 flex-wrap gap-4">
+    <div>
+      <h1 class="text-[1.75rem] font-bold text-[#EDE6DA] m-0 mb-1">
+        Transactions
+      </h1>
+      <p class="text-[#A39B8C] m-0 text-sm">
+        Historique des transactions blockchain
+      </p>
+    </div>
+
+    <button
+      class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border-2 border-[#3A3733] bg-transparent text-sm font-semibold text-[#EDE6DA] cursor-pointer transition-all hover:bg-[#2E2B27]"
+      (click)="exportData()">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Exporter CSV
+    </button>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="flex items-center flex-wrap gap-4 mb-4 px-4 py-4 bg-[#262421] rounded-xl border border-[#3A3733]">
+
+    <!-- Recherche -->
+    <div class="flex items-center flex-1 min-w-62 max-w-100 px-4 py-2.5 bg-[#1C1B19] border-2 border-[#3A3733] rounded-lg transition-all focus-within:border-[#E0A458]">
+      <svg class="w-4 h-4 text-[#A39B8C] shrink-0 mr-3"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (input)="onSearch()"
+        placeholder="Rechercher par hash ou adresse..."
+        class="flex-1 border-none bg-transparent text-sm text-[#EDE6DA] placeholder-[#A39B8C] outline-none font-[inherit]" />
+
+      @if (searchQuery) {
+        <button
+          type="button"
+          class="p-1 bg-transparent border-none text-[#A39B8C] cursor-pointer rounded hover:text-[#EDE6DA] hover:bg-[#3A3733] transition-colors"
+          (click)="searchQuery = ''; onSearch()"
+          aria-label="Effacer la recherche">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      }
+    </div>
+
+    <!-- Filtres -->
+    <div class="flex items-center gap-3 flex-wrap">
+      @for (filter of filters; track filter.key) {
+        <select
+          [(ngModel)]="filter.value"
+          (change)="onFilterChange()"
+          class="dt-filter-select px-4 pr-8 py-2.5 bg-[#1C1B19] border-2 border-[#3A3733] rounded-lg text-sm text-[#EDE6DA] cursor-pointer outline-none focus:border-[#E0A458] transition-colors font-[inherit]">
+          @for (opt of filter.options; track opt.value) {
+            <option [value]="opt.value">{{ opt.label }}</option>
+          }
+        </select>
+      }
+
+      @if (searchQuery || hasActiveFilters()) {
+        <button
+          type="button"
+          class="flex items-center gap-1.5 px-3 py-2 bg-transparent border-none text-[#A39B8C] text-[0.8rem] cursor-pointer rounded-md hover:bg-[#3A3733] hover:text-[#EDE6DA] transition-colors font-[inherit]"
+          (click)="clearFilters()">
+          <svg class="w-4 h-4" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="15" y1="9" x2="9" y2="15"/>
+            <line x1="9" y1="9" x2="15" y2="15"/>
+          </svg>
+          Réinitialiser
+        </button>
+      }
+    </div>
+
+    <!-- Sélection -->
+    @if (getSelectedCount() > 0) {
+      <div class="flex items-center ml-auto pl-4 border-l border-[#3A3733]">
+        <span class="text-sm text-[#A39B8C] font-medium">
+          {{ getSelectedCount() }} transaction(s) sélectionnée(s)
+        </span>
+      </div>
+    }
+  </div>
+
+  <!-- TABLEAU -->
+  <div class="bg-[#262421] rounded-2xl border border-[#3A3733] overflow-hidden overflow-x-auto">
+    <table class="w-full border-collapse text-[0.9rem]">
+
+      <thead class="bg-[#1C1B19]">
+        <tr>
+          <th class="w-12.5 text-center px-4 py-4 border-b-2 border-[#3A3733]">
+            <input
+              type="checkbox"
+              [(ngModel)]="selectAll"
+              (change)="toggleSelectAll()"
+              class="w-4.5 h-4.5 accent-[#E0A458] cursor-pointer"
+              aria-label="Sélectionner toutes les transactions" />
+          </th>
+
+          @for (col of columns; track col.key) {
+            <th
+              class="px-4 py-4 font-semibold text-[#EDE6DA] text-[0.7rem] uppercase tracking-wider border-b-2 border-[#3A3733] whitespace-nowrap select-none"
+              [class.cursor-pointer]="col.sortable"
+              [class.dt-th-sortable]="col.sortable"
+              [style.width]="col.width"
+              [style.text-align]="col.align || 'left'"
+              (click)="sortBy(col)">
+              <div
+                class="flex items-center gap-2"
+                [class.justify-center]="col.align === 'center'"
+                [class.justify-end]="col.align === 'right'">
+                <span>{{ col.label }}</span>
+
+                @if (col.sortable) {
+                  <span class="text-[#A39B8C] text-[0.7rem]">
+                    @if (getSortState(col) === 'none') {
+                      <svg class="w-3 h-3" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="7 10 12 5 17 10"/>
+                        <polyline points="7 14 12 19 17 14"/>
+                      </svg>
+                    }
+
+                    @if (getSortState(col) === 'asc') {
+                      <svg class="w-3 h-3 text-[#E0A458]"
+                        viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5">
+                        <polyline points="18 15 12 9 6 15"/>
+                      </svg>
+                    }
+
+                    @if (getSortState(col) === 'desc') {
+                      <svg class="w-3 h-3 text-[#E0A458]"
+                        viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5">
+                        <polyline points="6 9 12 15 18 9"/>
+                      </svg>
+                    }
+                  </span>
+                }
+              </div>
+            </th>
+          }
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (row of displayedData; track row['id']) {
+          <tr
+            class="border-b border-[#3A3733] last:border-0 hover:bg-[#2E2B27] transition-colors"
+            [class.dt-row-selected]="row['selected']">
+
+            <td class="px-4 py-3.5 text-center">
+              <input
+                type="checkbox"
+                [(ngModel)]="row['selected']"
+                (change)="onRowSelect()"
+                class="w-4.5 h-4.5 accent-[#E0A458] cursor-pointer"
+                aria-label="Sélectionner cette transaction" />
+            </td>
+
+            @for (col of columns; track col.key) {
+              <td
+                class="px-4 py-3.5 text-[#EDE6DA]"
+                [style.text-align]="col.align || 'left'">
+
+                <!-- Valeurs textuelles -->
+                @if (!col.type || col.type === 'text' || col.type === 'number') {
+                  <span
+                    [class.font-mono]="col.key === 'hash' || col.key === 'address'"
+                    [class.text-xs]="col.key === 'hash' || col.key === 'address'"
+                    [class.font-semibold]="col.key === 'amount'"
+                    [class.text-[#EDE6DA]]="col.key === 'amount'">
+                    {{ row[col.key] }}
+                  </span>
+                }
+
+                <!-- Date -->
+                @if (col.type === 'date') {
+                  {{ formatDate(row[col.key]) }}
+                }
+
+                <!-- Type et statut -->
+                @if (col.type === 'badge') {
+                  <span
+                    class="inline-flex items-center px-2.5 py-1 rounded-full text-[0.7rem] font-semibold"
+                    [class.bg-blue-50]="getBadgeColor(col, row[col.key]) === 'primary'"
+                    [class.text-blue-500]="getBadgeColor(col, row[col.key]) === 'primary'"
+                    [class.bg-emerald-50]="getBadgeColor(col, row[col.key]) === 'success'"
+                    [class.text-emerald-400]="getBadgeColor(col, row[col.key]) === 'success'"
+                    [class.bg-amber-50]="getBadgeColor(col, row[col.key]) === 'warning'"
+                    [class.text-amber-500]="getBadgeColor(col, row[col.key]) === 'warning'"
+                    [class.bg-red-50]="getBadgeColor(col, row[col.key]) === 'danger'"
+                    [class.text-red-400]="getBadgeColor(col, row[col.key]) === 'danger'"
+                    [class.bg-gray-100]="getBadgeColor(col, row[col.key]) === 'secondary'"
+                    [class.text-[#A39B8C]]="getBadgeColor(col, row[col.key]) === 'secondary'">
+                    {{ row[col.key] }}
+                  </span>
+                }
+
+                <!-- Action : consulter -->
+                @if (col.type === 'actions') {
+                  <div class="flex items-center justify-center gap-1">
+                    <button
+                      type="button"
+                      class="p-1.5 bg-transparent border-none text-[#A39B8C] cursor-pointer rounded-md hover:bg-[#3A3733] hover:text-[#E0A458] transition-colors"
+                      title="Voir la transaction"
+                      aria-label="Voir la transaction"
+                      (click)="onView(row)">
+                      <svg class="w-4 h-4" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    </button>
+                  </div>
+                }
+              </td>
+            }
+          </tr>
+        }
+
+        <!-- Aucun résultat -->
+        @if (displayedData.length === 0) {
+          <tr>
+            <td
+              [attr.colspan]="columns.length + 1"
+              class="text-center py-12">
+              <div class="flex flex-col items-center gap-3">
+                <svg class="w-12 h-12 text-[#A39B8C]"
+                  viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="1.5">
+                  <path d="M4 7h16M4 12h16M4 17h7"/>
+                </svg>
+
+                <p class="text-[#A39B8C] m-0">
+                  Aucune transaction trouvée
+                </p>
+
+                <button
+                  type="button"
+                  class="px-4 py-2 bg-[#262421] border-2 border-[#3A3733] rounded-lg text-sm font-semibold text-[#EDE6DA] cursor-pointer hover:border-[#E0A458] hover:text-[#E0A458] transition-all font-[inherit]"
+                  (click)="clearFilters()">
+                  Réinitialiser les filtres
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PAGINATION -->
+  @if (filteredData.length > 0) {
+    <div
+      class="flex items-center justify-between flex-wrap gap-4 px-4 py-4 mt-4 bg-[#262421] rounded-xl border border-[#3A3733] max-md:flex-col max-md:items-stretch">
+
+      <div class="text-sm text-[#A39B8C]">
+        Affichage de
+        <strong class="text-[#EDE6DA]">{{ getStartIndex() }}</strong>
+        à
+        <strong class="text-[#EDE6DA]">{{ getEndIndex() }}</strong>
+        sur
+        <strong class="text-[#EDE6DA]">{{ totalItems }}</strong>
+        transactions
+      </div>
+
+      <div class="flex items-center gap-6 flex-wrap max-md:flex-col max-md:items-stretch max-md:gap-4">
+
+        <!-- Taille de page -->
+        <div class="flex items-center gap-2">
+          <label class="text-[0.8rem] text-[#A39B8C] shrink-0">
+            Lignes par page :
+          </label>
+
+          <select
+            [(ngModel)]="pageSize"
+            (change)="onPageSizeChange()"
+            class="dt-page-select px-3 pr-7 py-1.5 border border-[#3A3733] rounded-md text-[0.8rem] text-[#EDE6DA] cursor-pointer outline-none focus:border-[#E0A458] font-[inherit]">
+            @for (s of pageSizeOptions; track s) {
+              <option [value]="s">{{ s }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex items-center gap-1 max-md:justify-center">
+
+          <!-- Première page -->
+          <button
+            type="button"
+            class="flex items-center justify-center w-9 h-9 bg-[#262421] border border-[#3A3733] rounded-md text-[#A39B8C] cursor-pointer hover:border-[#E0A458] hover:text-[#E0A458] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            [disabled]="currentPage === 1"
+            (click)="goToPage(1)"
+            aria-label="Première page">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="11 17 6 12 11 7"/>
+              <polyline points="18 17 13 12 18 7"/>
+            </svg>
+          </button>
+
+          <!-- Page précédente -->
+          <button
+            type="button"
+            class="flex items-center justify-center w-9 h-9 bg-[#262421] border border-[#3A3733] rounded-md text-[#A39B8C] cursor-pointer hover:border-[#E0A458] hover:text-[#E0A458] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            [disabled]="currentPage === 1"
+            (click)="goToPage(currentPage - 1)"
+            aria-label="Page précédente">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+
+          @for (page of getPageNumbers(); track page) {
+            <button
+              type="button"
+              class="flex items-center justify-center min-w-9 h-9 px-2 border rounded-md text-sm font-medium cursor-pointer transition-all"
+              [class.bg-[#E0A458]]="page === currentPage"
+              [class.border-[#E0A458]]="page === currentPage"
+              [class.text-[#1C1B19]]="page === currentPage"
+              [class.bg-[#262421]]="page !== currentPage"
+              [class.border-[#3A3733]]="page !== currentPage"
+              [class.text-[#EDE6DA]]="page !== currentPage"
+              [class.hover:border-[#E0A458]]="page !== currentPage"
+              [class.hover:text-[#E0A458]]="page !== currentPage"
+              (click)="goToPage(page)">
+              {{ page }}
+            </button>
+          }
+
+          <!-- Page suivante -->
+          <button
+            type="button"
+            class="flex items-center justify-center w-9 h-9 bg-[#262421] border border-[#3A3733] rounded-md text-[#A39B8C] cursor-pointer hover:border-[#E0A458] hover:text-[#E0A458] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            [disabled]="currentPage === getTotalPages()"
+            (click)="goToPage(currentPage + 1)"
+            aria-label="Page suivante">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+
+          <!-- Dernière page -->
+          <button
+            type="button"
+            class="flex items-center justify-center w-9 h-9 bg-[#262421] border border-[#3A3733] rounded-md text-[#A39B8C] cursor-pointer hover:border-[#E0A458] hover:text-[#E0A458] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            [disabled]="currentPage === getTotalPages()"
+            (click)="goToPage(getTotalPages())"
+            aria-label="Dernière page">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="13 17 18 12 13 7"/>
+              <polyline points="6 17 11 12 6 7"/>
+            </svg>
+          </button>
+
+        </div>
+      </div>
+    </div>
+  }
+</div>
+```

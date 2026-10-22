@@ -1,0 +1,99 @@
+:host {
+  display: block;
+  background: #1C1B19;
+}
+
+:host .event-card {
+  background: #262421;
+  border-color: #3A3733;
+  border-radius: 14px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  box-shadow: none;
+}
+
+:host .event-card:hover {
+  background: #2E2B27;
+  border-color: #4A463F;
+  transform: none;
+  box-shadow: none;
+}
+
+:host .event-card-meta,
+:host .event-card-location,
+:host .event-card-trend-label,
+:host .event-card-attendees,
+:host .event-card-attendees-count {
+  color: #A39B8C;
+}
+
+:host .event-card-title,
+:host .event-card-amount p {
+  color: #EDE6DA;
+}
+
+:host .event-card-amount p.event-card-amount--positive {
+  color: #4ADE80;
+}
+
+:host .event-card-amount p.event-card-amount--negative {
+  color: #F87171;
+}
+
+:host .event-card-amount p.event-card-amount--neutral {
+  color: #EDE6DA;
+}
+
+:host .event-card-badge {
+  background: transparent;
+  border-color: #3A3733;
+  color: #E0A458;
+}
+
+:host .event-card-trend {
+  background: #2E2B27;
+  border: 1px solid #3A3733;
+  color: #A39B8C;
+}
+
+:host .event-card-trend--up {
+  background: rgba(34, 197, 94, 0.14);
+  border-color: rgba(34, 197, 94, 0.3);
+  color: #4ADE80;
+}
+
+:host .event-card-trend--down {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #F87171;
+}
+
+:host .event-card-trend--flat {
+  background: rgba(237, 230, 218, 0.08);
+  color: #D7CDBE;
+}
+
+:host .event-card-action,
+:host .event-card-publish {
+  border-radius: 12px;
+  border: 1px solid #3A3733;
+  background: transparent;
+  color: #EDE6DA;
+  box-shadow: none;
+}
+
+:host .event-card-action:hover,
+:host .event-card-publish:hover {
+  background: #2E2B27;
+  border-color: #4A463F;
+}
+
+:host .event-card-publish {
+  background: #E0A458;
+  border-color: #E0A458;
+  color: #1C1B19;
+}
+
+:host .event-card-publish:hover {
+  background: #EBB46B;
+  border-color: #EBB46B;
+}

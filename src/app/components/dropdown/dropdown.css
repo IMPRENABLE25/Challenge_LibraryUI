@@ -1,0 +1,40 @@
+:host {
+  position: relative;
+  display: inline-flex;
+}
+
+.dropdown-menu {
+  background: #262421;
+  border: 1px solid #3A3733;
+  box-shadow: none;
+  color-scheme: dark;
+}
+
+.dropdown-item {
+  background: transparent;
+  color: #EDE6DA;
+}
+
+.dropdown-item:hover {
+  background: #2E2B27;
+}
+
+.dropdown-item svg,
+.dropdown-item span {
+  color: inherit;
+}
+
+.dropdown-trigger {
+  background: #262421;
+  border: 1px solid #3A3733;
+}
+
+.dropdown-trigger:hover {
+  border-color: #E0A458;
+}
+
+.dropdown-badge {
+  background: rgba(224, 164, 88, 0.08);
+  border: 1px solid rgba(224, 164, 88, 0.3);
+  color: #E0A458;
+}

@@ -1,0 +1,110 @@
+:host {
+  display: block;
+  background: #1C1B19;
+  color: #EDE6DA;
+}
+
+.dt-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.dt-filter-select,
+.dt-page-select,
+:host select,
+:host input {
+  appearance: none;
+  background-color: #1C1B19;
+  color: #EDE6DA;
+  border: 1px solid #3A3733;
+  border-radius: 12px;
+  color-scheme: dark;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23E0A458' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1.5em;
+}
+
+:host [class*="bg-white"],
+:host [class*="bg-gray-50"],
+:host [class*="bg-gray-100"],
+:host [class*="bg-slate-50"],
+:host [class*="bg-slate-100"] {
+  background: #262421 !important;
+}
+
+:host [class*="border-gray-"],
+:host [class*="border-slate-"],
+:host [class*="border-indigo-"] {
+  border-color: #3A3733 !important;
+}
+
+:host [class*="text-gray-"],
+:host [class*="text-slate-"] {
+  color: #EDE6DA !important;
+}
+
+:host [class*="text-gray-500"],
+:host [class*="text-slate-500"],
+:host [class*="text-gray-400"],
+:host [class*="text-gray-600"],
+:host [class*="text-slate-600"] {
+  color: #A39B8C !important;
+}
+
+:host [class*="text-indigo"],
+:host [class*="text-blue"],
+:host [class*="text-amber"],
+:host [class*="text-sky"] {
+  color: #E0A458 !important;
+}
+
+:host [class*="text-emerald"] {
+  color: #4ADE80 !important;
+}
+
+:host [class*="text-red"] {
+  color: #F87171 !important;
+}
+
+:host [class*="text-blue"] {
+  color: #60A5FA !important;
+}
+
+:host [class*="bg-indigo-"],
+:host [class*="bg-amber-"],
+:host [class*="bg-gray-100"],
+:host [class*="bg-gray-200"] {
+  background: rgba(224, 164, 88, 0.08) !important;
+}
+
+:host [class*="bg-emerald-"] {
+  background: rgba(34, 197, 94, 0.16) !important;
+}
+
+:host [class*="bg-red-"] {
+  background: rgba(239, 68, 68, 0.16) !important;
+}
+
+:host [class*="bg-blue-"],
+:host [class*="bg-sky-"] {
+  background: rgba(96, 165, 250, 0.16) !important;
+}
+
+:host .dt-row-selected td {
+  background: rgba(224, 164, 88, 0.08);
+}
+
+:host .dt-row-selected:hover td {
+  background: rgba(224, 164, 88, 0.14);
+}
+
+:host .dt-th-sortable:hover {
+  background: #2E2B27;
+}
+
+:host [class*="shadow-"],
+:host [class*="ring-"] {
+  box-shadow: none !important;
+}

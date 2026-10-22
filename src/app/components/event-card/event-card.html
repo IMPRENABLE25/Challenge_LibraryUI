@@ -1,0 +1,151 @@
+<div class="event-card-list mx-auto flex max-w-210 flex-col gap-4 px-5 py-12">
+  @for (card of cards(); track card.id) {
+    <article
+      class="event-card w-full rounded-2xl border p-6 sm:p-8"
+    >
+      <div class="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+        <div class="min-w-0">
+          <div class="event-card-meta mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-medium">
+            <span class="inline-flex items-center gap-1.5">
+              <svg class="h-4 w-4 shrink-0 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="16" rx="2" />
+                <path d="M3 10h18" />
+                <path d="M8 3v4" />
+                <path d="M16 3v4" />
+              </svg>
+              {{ card.date }}
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+              <svg class="h-4 w-4 shrink-0 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5l3 2" />
+              </svg>
+              {{ card.time }}
+            </span>
+          </div>
+
+          <h3 class="event-card-title truncate text-[26px] font-bold leading-tight sm:text-3xl">
+            {{ card.title }}
+          </h3>
+
+          <p class="event-card-location mt-2 flex items-center gap-1.5 text-sm">
+            <svg class="h-4 w-4 shrink-0 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M17 20.5v-1a3.5 3.5 0 0 0-3.5-3.5h-3A3.5 3.5 0 0 0 7 19.5v1" />
+              <circle cx="12" cy="8.5" r="3.25" />
+            </svg>
+            {{ card.location }}
+          </p>
+
+          <!-- Draft badge -->
+          @if (card.isDraft) {
+            <div class="mt-4">
+              <span
+                class="event-card-badge inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium"
+              >
+                <svg class="h-4 w-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" />
+                  <path d="M14 3v5h5" />
+                </svg>
+                Draft
+              </span>
+            </div>
+          }
+
+          <!-- Attendees avatar stack -->
+          @if (!card.isDraft && card.avatars.length > 0) {
+            <div class="event-card-avatars mt-4 flex items-center">
+              <div class="flex -space-x-2.5">
+                @for (avatar of card.avatars; track avatar.name) {
+                  <span
+                    class="inline-flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold text-white ring-2 ring-gray-50 {{ avatar.colorClass }}"
+                    [attr.title]="avatar.name"
+                  >
+                    {{ avatar.initials }}
+                  </span>
+                }
+              </div>
+              @if (card.extraAttendeesCount > 0) {
+                <p class="event-card-attendees ml-3 text-sm">
+                  <span class="event-card-attendees-count font-semibold">+{{ card.extraAttendeesCount }} more</span>
+                  {{ card.attendeesStatusLabel }}
+                </p>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Right column: amount and trend -->
+        <div class="event-card-amount text-left sm:text-right">
+          <p class="text-3xl font-bold sm:text-4xl {{ amountClasses(card.amountVariant) }}">{{ card.amount }}</p>
+          <div class="mt-1 flex items-center gap-2 sm:justify-end">
+            <span class="event-card-trend-label text-sm">{{ card.trendPeriodLabel }}</span>
+            <span
+              class="event-card-trend inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold {{ trendBadgeClasses(card.trendDirection) }}"
+            >
+              @if (card.trendDirection === 'up') {
+                <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 17 10 11 14 15 20 8" />
+                  <path d="M14 8h6v6" />
+                </svg>
+              } @else if (card.trendDirection === 'down') {
+                <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 7 10 13 14 9 20 16" />
+                  <path d="M14 16h6v-6" />
+                </svg>
+              } @else {
+                <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14" />
+                </svg>
+              }
+              {{ card.trendPercent }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div class="event-card-actions flex flex-wrap gap-3">
+          <button
+            type="button"
+            class="event-card-action inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-semibold transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 active:bg-gray-100"
+            (click)="onEditEvent(card)"
+          >
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+            </svg>
+            Edit Event
+          </button>
+
+          <button
+            type="button"
+            class="event-card-action inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-semibold transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 active:bg-gray-100"
+            (click)="onCopyLink(card)"
+          >
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="8" y="4" width="12" height="16" rx="2" />
+              <path d="M8 8H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1" />
+            </svg>
+            Copy Link
+          </button>
+        </div>
+
+        @if (card.showPublishAction) {
+          <button
+            type="button"
+            class="event-card-publish inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2"
+            (click)="onPublish(card)"
+          >
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+            </svg>
+            Publish
+          </button>
+        }
+      </div>
+    </article>
+  }
+</div>
+

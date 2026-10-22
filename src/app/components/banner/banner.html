@@ -1,0 +1,36 @@
+<section class="banner relative min-h-screen flex items-center justify-center overflow-hidden font-sans">
+
+  <div class="relative z-10 text-center max-w-190 px-8">
+
+    <div class="flex gap-3 justify-center mb-8 flex-wrap">
+      <span class="px-4 py-1.5 rounded-full text-xs font-semibold border border-[#E0A458]/25 bg-[#E0A458]/10 text-[#E0A458]">
+        {{ pills[0] }}
+      </span>
+      <span class="px-4 py-1.5 rounded-full text-xs font-semibold border border-[#3a352f] bg-[#262421] text-[#EDE6DA] shadow-sm">
+        {{ pills[1] }}
+      </span>
+    </div>
+
+    <h1 class="mb-6 flex flex-col gap-1 text-[clamp(3rem,8vw,5.5rem)] font-black leading-[1.05] tracking-[-0.04em] text-[#EDE6DA]">
+      <span
+        *ngFor="let h of headline; let first = first"
+        [ngClass]="first ? 'text-[#E0A458]' : ''"
+      >{{ h }}</span>
+    </h1>
+
+    <p class="mx-auto mb-10 max-w-140 text-[1.125rem] leading-[1.7] text-[#D7CDBE]">
+      {{ sub }}
+    </p>
+
+    <div class="flex gap-4 justify-center flex-wrap">
+      <button
+        type="button"
+        [routerLink]="primaryRoute"
+        class="banner-cta cursor-pointer rounded-xl border px-8 py-3.5 text-[0.95rem] font-semibold text-[#1C1B19] transition-all duration-200"
+      >
+        {{ primaryButton }} <span class="ml-1.5">→</span>
+      </button>
+    </div>
+
+  </div>
+</section>
